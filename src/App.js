@@ -18,7 +18,7 @@ class App extends React.Component {
           <Route path="/favorites" component={ Favorites } />
           <Route path="/profile/edit" component={ ProfileEdit } />
           <Route path="/profile" component={ Profile } />
-          <Route path="/" component={ Login } />
+          <Route exact path="/" component={ Login } />
           <Route path="*" component={ NotFound } />
         </Switch>
       </Router>
