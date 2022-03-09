@@ -1,0 +1,13 @@
+#page-login {
+  align-items: center;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  justify-content: center;
+  width: fit-content;
+}
+
+#user-input {
+  text-align: center;
+}
