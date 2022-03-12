@@ -1,7 +1,7 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
+import Albums from '../components/Albums';
 import { getUser } from '../services/userAPI';
 
 class Search extends React.Component {
@@ -11,8 +11,14 @@ class Search extends React.Component {
       userName: null,
       loading: true,
       btnDisabled: true,
+      artistQuery: null,
+      isSearching: false,
+      hasClicked: false,
     };
+    this.searchArtistInput = React.createRef();
     this.inputLengthTracker = this.inputLengthTracker.bind(this);
+    this.clickHandler = this.clickHandler.bind(this);
+    this.didApiReturned = this.didApiReturned.bind(this);
   }
 
   async componentDidMount() {
@@ -30,28 +36,63 @@ class Search extends React.Component {
     });
   }
 
+  clickHandler() {
+    const artistQuery = this.searchArtistInput.current.value;
+    this.searchArtistInput.current.value = '';
+    this.setState({
+      artistQuery,
+      btnDisabled: true,
+      isSearching: true,
+      hasClicked: true,
+    });
+  }
+
+  didApiReturned(bool) {
+    this.setState({
+      isSearching: !bool,
+    });
+  }
+
   render() {
-    const { inputLengthTracker } = this;
-    const { userName, loading, btnDisabled } = this.state;
+    const { inputLengthTracker, clickHandler, didApiReturned } = this;
+    const {
+      userName,
+      loading,
+      btnDisabled,
+      isSearching,
+      hasClicked,
+      artistQuery,
+    } = this.state;
     return (
       <main data-testid="page-search">
         {loading ? <Loading /> : <Header userName={ userName } />}
         <h1>Search</h1>
         <form id="search-form">
-          <input
-            data-testid="search-artist-input"
-            placeholder="Nome do Artista"
-            onChange={ inputLengthTracker }
-          />
-          <button
-            data-testid="search-artist-button"
-            disabled={ btnDisabled }
-            id="search-artist-button"
-            type="button"
-          >
-            Procurar
-          </button>
+          {isSearching ? (
+            <Loading />
+          ) : (
+            <>
+              <input
+                data-testid="search-artist-input"
+                ref={ this.searchArtistInput }
+                placeholder="Nome do Artista"
+                onChange={ inputLengthTracker }
+              />
+              <button
+                data-testid="search-artist-button"
+                disabled={ btnDisabled }
+                id="search-artist-button"
+                type="button"
+                onClick={ clickHandler }
+              >
+                Procurar
+              </button>
+            </>
+          )}
         </form>
+        {hasClicked && (
+          <Albums didApiReturned={ didApiReturned } artistQuery={ artistQuery } />
+        )}
       </main>
     );
   }
