@@ -36,7 +36,7 @@ class Login extends React.Component {
     const { inputLengthTracker, createUserLocal } = this;
     const { btnDisabled } = this.state;
     return (
-      <div data-testid="page-login" id="page-login">
+      <div data-testid="page-login" id="page-login" className="div-flexbox">
         <img alt="trybe-tunes-logo" />
         <form>
           <input
