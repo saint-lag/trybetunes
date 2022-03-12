@@ -23,9 +23,9 @@ class Favorites extends React.Component {
   render() {
     const { userName, loading } = this.state;
     return (
-      <main>
+      <main data-testid="page-favorites">
         {loading ? <Loading /> : <Header userName={ userName } />}
-        <h1 data-testid="page-favorites">Favorites</h1>
+        <h1>Favorites</h1>
       </main>
     );
   }

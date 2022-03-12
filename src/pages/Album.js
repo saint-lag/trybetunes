@@ -22,9 +22,9 @@ class Album extends React.Component {
   render() {
     const { userName, loading } = this.state;
     return (
-      <main>
+      <main data-testid="page-album">
         {loading ? <Loading /> : <Header userName={ userName } />}
-        <h1 data-testid="page-album">Album</h1>
+        <h1>Album</h1>
       </main>
     );
   }

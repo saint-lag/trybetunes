@@ -22,9 +22,9 @@ class ProfileEdit extends React.Component {
   render() {
     const { userName, loading } = this.state;
     return (
-      <main>
+      <main data-testid="page-profile-edit">
         {loading ? <Loading /> : <Header userName={ userName } />}
-        <h1 data-testid="page-profile-edit">Profile Edit</h1>
+        <h1>Profile Edit</h1>
       </main>
     );
   }

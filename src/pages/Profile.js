@@ -22,9 +22,9 @@ class Profile extends React.Component {
   render() {
     const { userName, loading } = this.state;
     return (
-      <main>
+      <main data-testid="page-profile">
         {loading ? <Loading /> : <Header userName={ userName } />}
-        <h1 data-testid="page-profile">Profile</h1>
+        <h1>Profile</h1>
       </main>
     );
   }

@@ -10,7 +10,9 @@ class Search extends React.Component {
     this.state = {
       userName: null,
       loading: true,
+      btnDisabled: true,
     };
+    this.inputLengthTracker = this.inputLengthTracker.bind(this);
   }
 
   async componentDidMount() {
@@ -20,12 +22,36 @@ class Search extends React.Component {
     });
   }
 
+  inputLengthTracker(event) {
+    const { value } = event.target;
+    const MINIMUN_INPUT_LENGTH = 2;
+    this.setState({
+      btnDisabled: value.length < MINIMUN_INPUT_LENGTH,
+    });
+  }
+
   render() {
-    const { userName, loading } = this.state;
+    const { inputLengthTracker } = this;
+    const { userName, loading, btnDisabled } = this.state;
     return (
-      <main>
+      <main data-testid="page-search">
         {loading ? <Loading /> : <Header userName={ userName } />}
-        <h1 data-testid="page-search">Search</h1>
+        <h1>Search</h1>
+        <form id="search-form">
+          <input
+            data-testid="search-artist-input"
+            placeholder="Nome do Artista"
+            onChange={ inputLengthTracker }
+          />
+          <button
+            data-testid="search-artist-button"
+            disabled={ btnDisabled }
+            id="search-artist-button"
+            type="button"
+          >
+            Procurar
+          </button>
+        </form>
       </main>
     );
   }
