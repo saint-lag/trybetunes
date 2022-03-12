@@ -1,0 +1,13 @@
+header {
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+#links {
+  display: flex;
+  justify-content: space-around;
+  width: 500px;
+}

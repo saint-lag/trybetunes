@@ -16,9 +16,10 @@ class Login extends React.Component {
 
   async createUserLocal() {
     const { userName } = this.state;
-    const { loadingStateHandler } = this.props;
+    const { loadingStateHandler, redirectHandler } = this.props;
     loadingStateHandler(true);
     await createUser({ name: userName });
+    redirectHandler('/search');
     loadingStateHandler(false);
   }
 
@@ -51,7 +52,7 @@ class Login extends React.Component {
             disabled={ btnDisabled }
             onClick={ createUserLocal }
           >
-            Button
+            Entrar
           </button>
         </form>
       </div>
@@ -61,6 +62,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
   loadingStateHandler: PropTypes.func.isRequired,
+  redirectHandler: PropTypes.func.isRequired,
 };
 
 export default Login;

@@ -1,13 +1,13 @@
 import React from 'react';
 import './app.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Album from './pages/Album';
 import Favorites from './pages/Favorites';
-import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
 import ProfileEdit from './pages/ProfileEdit';
 import Search from './pages/Search';
+import Login from './pages/Login';
 import Loading from './components/Loading';
 
 class App extends React.Component {
@@ -15,8 +15,10 @@ class App extends React.Component {
     super();
     this.state = {
       loading: false,
+      redirect: null,
     };
     this.loadingStateHandler = this.loadingStateHandler.bind(this);
+    this.redirectHandler = this.redirectHandler.bind(this);
   }
 
   loadingStateHandler(state) {
@@ -25,11 +27,19 @@ class App extends React.Component {
     });
   }
 
+  redirectHandler(state) {
+    this.setState({
+      redirect: state,
+    });
+  }
+
   render() {
-    const { loading } = this.state;
-    const { loadingStateHandler } = this;
+    const { loading, redirect } = this.state;
+    const { loadingStateHandler, redirectHandler } = this;
+
     return (
       <Router>
+        {redirect && <Redirect to={ redirect } />}
         {loading ? (
           <Loading />
         ) : (
@@ -65,7 +75,10 @@ class App extends React.Component {
             <Route
               exact
               path="/"
-              render={ () => <Login loadingStateHandler={ loadingStateHandler } /> }
+              render={ () => (<Login
+                loadingStateHandler={ loadingStateHandler }
+                redirectHandler={ redirectHandler }
+              />) }
             />
             <Route
               path="*"

@@ -2,7 +2,9 @@ import React from 'react';
 
 class NotFound extends React.Component {
   render() {
-    return <div data-testid="page-not-found">Not Found</div>;
+    return (
+      <h1 data-testid="page-not-found">Not Found</h1>
+    );
   }
 }
 
