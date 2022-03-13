@@ -44,10 +44,14 @@ AlbumCard.propTypes = {
   artistName: PropTypes.string.isRequired,
   collectionId: PropTypes.number.isRequired,
   collectionName: PropTypes.string.isRequired,
-  collectionPrice: PropTypes.number.isRequired,
+  collectionPrice: PropTypes.number,
   artworkUrl100: PropTypes.string.isRequired,
   releaseDate: PropTypes.string.isRequired,
   trackCount: PropTypes.number.isRequired,
+};
+
+AlbumCard.defaultProps = {
+  collectionPrice: undefined,
 };
 
 export default AlbumCard;

@@ -16,6 +16,10 @@ class Albums extends React.Component {
     this.apiRequest();
   }
 
+  componentDidUpdate() {
+    this.apiRequest();
+  }
+
   async apiRequest() {
     const { artistQuery } = this.props;
     const { didApiReturned } = this.props;
