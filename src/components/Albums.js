@@ -30,33 +30,41 @@ class Albums extends React.Component {
     return (
       albumResults
       && (
-        <section id="albums-container">
-          {albumResults.map((album) => {
-            const {
-              artistId,
-              artistName,
-              collectionId,
-              collectionName,
-              collectionPrice,
-              artworkUrl100,
-              releaseDate,
-              trackCount,
-            } = album;
-            return (
-              <AlbumCard
-                key={ collectionId }
-                artistId={ artistId }
-                artistName={ artistName }
-                collectionId={ collectionId }
-                collectionPrice={ collectionPrice }
-                collectionName={ collectionName }
-                artworkUrl100={ artworkUrl100 }
-                releaseDate={ releaseDate }
-                trackCount={ trackCount }
-              />
-            );
-          })}
-        </section>
+        albumResults.length > 0
+          ? (
+            <section id="albums-container">
+              {albumResults.map((album) => {
+                const {
+                  artistId,
+                  artistName,
+                  collectionId,
+                  collectionName,
+                  collectionPrice,
+                  artworkUrl100,
+                  releaseDate,
+                  trackCount,
+                } = album;
+                return (
+                  <AlbumCard
+                    key={ collectionId }
+                    artistId={ artistId }
+                    artistName={ artistName }
+                    collectionId={ collectionId }
+                    collectionPrice={ collectionPrice }
+                    collectionName={ collectionName }
+                    artworkUrl100={ artworkUrl100 }
+                    releaseDate={ releaseDate }
+                    trackCount={ trackCount }
+                  />
+                );
+              })}
+            </section>
+          )
+          : (
+            <section>
+              <h1>Nenhum álbum foi encontrado</h1>
+            </section>
+          )
       )
     );
   }

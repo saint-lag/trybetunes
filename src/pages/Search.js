@@ -91,7 +91,14 @@ class Search extends React.Component {
           )}
         </form>
         {hasClicked && (
-          <Albums didApiReturned={ didApiReturned } artistQuery={ artistQuery } />
+          <>
+            <h2>
+              Resultado de álbuns de:
+              {' '}
+              {artistQuery}
+            </h2>
+            <Albums didApiReturned={ didApiReturned } artistQuery={ artistQuery } />
+          </>
         )}
       </main>
     );
