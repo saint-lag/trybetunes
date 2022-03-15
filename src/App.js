@@ -52,7 +52,10 @@ class App extends React.Component {
             />
             <Route
               path="/album/:id"
-              render={ () => <Album loadingStateHandler={ loadingStateHandler } /> }
+              render={ (props) => (<Album
+                { ...props }
+                loadingStateHandler={ loadingStateHandler }
+              />) }
             />
             <Route
               path="/favorites"

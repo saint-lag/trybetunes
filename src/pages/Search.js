@@ -19,9 +19,14 @@ class Search extends React.Component {
     this.inputLengthTracker = this.inputLengthTracker.bind(this);
     this.clickHandler = this.clickHandler.bind(this);
     this.didApiReturned = this.didApiReturned.bind(this);
+    this.getUserRequest = this.getUserRequest.bind(this);
   }
 
   async componentDidMount() {
+    await this.getUserRequest();
+  }
+
+  async getUserRequest() {
     this.setState({
       userName: await getUser().then((user) => user.name),
       loading: false,
