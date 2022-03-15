@@ -9,7 +9,7 @@ class Header extends React.Component {
     return (
       <header data-testid="header-component">
         <h2 data-testid="header-user-name">{userName}</h2>
-        <div id="links">
+        <div className="links">
           <Link to="/profile" data-testid="link-to-profile">
             Profile
           </Link>
