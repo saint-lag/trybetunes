@@ -10,9 +10,14 @@ class ProfileEdit extends React.Component {
       userName: null,
       loading: true,
     };
+    this.getUserRequest = this.getUserRequest.bind(this);
   }
 
   async componentDidMount() {
+    await this.getUserRequest();
+  }
+
+  async getUserRequest() {
     this.setState({
       userName: await getUser().then((user) => user.name),
       loading: false,

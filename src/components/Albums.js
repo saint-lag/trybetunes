@@ -12,12 +12,12 @@ class Albums extends React.Component {
     this.apiRequest = this.apiRequest.bind(this);
   }
 
-  componentDidMount() {
-    this.apiRequest();
+  async componentDidMount() {
+    await this.apiRequest();
   }
 
-  componentDidUpdate() {
-    this.apiRequest();
+  async componentDidUpdate() {
+    await this.apiRequest();
   }
 
   async apiRequest() {
