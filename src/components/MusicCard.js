@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './components-styles/album-card.css';
-import { addSong, removeSong } from '../services/favoriteSongsAPI';
+import {
+  addSong,
+  removeSong,
+  getFavoriteSongs,
+} from '../services/favoriteSongsAPI';
 import Loading from './Loading';
 
 class MusicCard extends React.Component {
@@ -16,11 +20,19 @@ class MusicCard extends React.Component {
   async isChecked(event) {
     if (event.target.checked) {
       this.setState({ loading: true });
-      await addSong(event.target.id);
+      await addSong(event.target.name);
+
+      const FAVORITES_TEST = await getFavoriteSongs();
+      console.log(`FAVORITES_TEST: ${FAVORITES_TEST}`);
+
       this.setState({ loading: false });
     } else {
       this.setState({ loading: true });
-      await removeSong(event.target.id);
+      await removeSong(event.target.name);
+
+      const FAVORITES_TEST = await getFavoriteSongs();
+      console.log(`FAVORITES_TEST: ${FAVORITES_TEST}`);
+
       this.setState({ loading: false });
     }
   }
@@ -38,11 +50,8 @@ class MusicCard extends React.Component {
     return (
       <div id={ trackId } className="music-card">
         {trackExplicitness !== 'notExplicit' && <h3>NSFW</h3>}
-        <h3>
-          {trackName}
-          {' '}
-          {trackNumber}
-        </h3>
+        <h3>{trackName}</h3>
+        <h3>{trackNumber}</h3>
         <audio data-testid="audio-component" src={ previewUrl } controls>
           <track kind="captions" />
           O seu navegador não suporta o elemento
@@ -52,7 +61,7 @@ class MusicCard extends React.Component {
           Favorita
           <input
             data-testid={ `checkbox-music-${trackId}` }
-            id={ trackId }
+            name={ trackId }
             type="checkbox"
             onClick={ this.isChecked }
             defaultChecked={ isFavorite }

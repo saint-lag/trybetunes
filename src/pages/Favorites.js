@@ -19,14 +19,12 @@ class Favorites extends React.Component {
     this.getUserRequest = this.getUserRequest.bind(this);
     this.getFavoriteSongsRequest = this.getFavoriteSongsRequest.bind(this);
     this.getFavoriteSongsObj = this.getFavoriteSongsObj.bind(this);
-    this.getSongsApi = this.getSongsApi.bind(this);
   }
 
   async componentDidMount() {
     await this.getUserRequest();
     await this.getFavoriteSongsRequest();
     await this.getFavoriteSongsObj();
-    await this.getSongsApi();
   }
 
   async getUserRequest() {
@@ -45,7 +43,7 @@ class Favorites extends React.Component {
   async getFavoriteSongsObj() {
     const { favorites } = this.state;
     this.setState({
-      favoriteSongsObj: await favorites.map(async (id) => getMusics(id)),
+      favoriteSongsObj: [...await getMusics(favorites)],
       didFavoriteSongsApiReturned: true,
     });
   }
