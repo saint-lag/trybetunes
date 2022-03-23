@@ -5,6 +5,7 @@ import MusicCard from './MusicCard';
 class Musics extends React.Component {
   render() {
     const { albumTracks, favoriteSongs } = this.props;
+    console.log(favoriteSongs);
     return (
       albumTracks
       && (albumTracks.length > 0 ? (

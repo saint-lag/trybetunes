@@ -19,11 +19,12 @@ class Profile extends React.Component {
   }
 
   async getUserRequest() {
+    const userData = await getUser();
     this.setState({
-      userName: await getUser().then((user) => user.name),
-      userEmail: await getUser().then((user) => user.email),
-      userImage: await getUser().then((user) => user.image),
-      userDescription: await getUser().then((user) => user.description),
+      userName: userData.name,
+      userEmail: userData.email,
+      userImage: userData.image,
+      userDescription: userData.description,
       loading: false,
     });
   }
@@ -33,7 +34,6 @@ class Profile extends React.Component {
     return (
       <main data-testid="page-profile">
         {loading ? <Loading /> : <Header userName={ userName } />}
-
         {loading ? (
           <Loading />
         ) : (
@@ -43,7 +43,7 @@ class Profile extends React.Component {
               src={ userImage }
               alt={ `${userName}-avatar` }
             />
-            <Link to="profile/edit">Editar Perfil</Link>
+            <Link to="profile/edit">Editar perfil</Link>
             <h2>Nome</h2>
             <h3>{userName}</h3>
             <h2>E-mail</h2>

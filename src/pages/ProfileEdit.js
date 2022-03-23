@@ -1,63 +1,161 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
-import { getUser } from '../services/userAPI';
+import { getUser, updateUser } from '../services/userAPI';
 
 class ProfileEdit extends React.Component {
   constructor() {
     super();
     this.state = {
-      userName: null,
+      calledApi: false,
+      userData: {
+        nameInput: '',
+        emailInput: '',
+        imageInput: '',
+        descriptionInput: '',
+      },
       loading: true,
-      userName: null,
-      userEmail: null,
-      userImage: null,
-      userDescription: null,
       btnDisabled: true,
       lengthTracker: {
         nameInput: false,
         emailInput: false,
         imageInput: false,
-        descriptionInput: false },
+        descriptionInput: false,
+      },
     };
     this.getUserRequest = this.getUserRequest.bind(this);
     this.inputLengthTracker = this.inputLengthTracker.bind(this);
+    this.emailVerification = this.emailVerification.bind(this);
+    this.inputHandler = this.inputHandler.bind(this);
+    this.updateUserRequest = this.updateUserRequest.bind(this);
+    this.checksUserData = this.checksUserData.bind(this);
   }
 
   async componentDidMount() {
     await this.getUserRequest();
+    this.checksUserData();
   }
 
   async getUserRequest() {
+    const { name, image, email, description } = await getUser();
     this.setState({
-      userName: await getUser().then((user) => user.name),
-      userName: await getUser().then((user) => user.name),
-      userEmail: await getUser().then((user) => user.email),
-      userImage: await getUser().then((user) => user.image),
-      userDescription: await getUser().then((user) => user.description),
+      userName: name,
+      userImage: image,
+      userEmail: email,
+      userDescription: description,
+      userData: {
+        nameInput: name,
+        emailInput: email,
+        imageInput: image,
+        descriptionInput: description,
+      },
       loading: false,
     });
   }
 
-  inputLengthTracker(event) {
+  checksUserData() {
+    const { userName, userImage, userDescription } = this.state;
     const MINIMUN_INPUT_LENGTH = 1;
+    this.setState(
+      {
+        lengthTracker: {
+          nameInput: userName.length >= MINIMUN_INPUT_LENGTH,
+          emailInput: this.emailVerification(),
+          imageInput: userImage.length >= MINIMUN_INPUT_LENGTH,
+          descriptionInput: userDescription.length >= MINIMUN_INPUT_LENGTH,
+        },
+      },
+      async () => {
+        const { lengthTracker } = this.state;
+        this.setState({
+          btnDisabled: !Object.values(lengthTracker).every(
+            (bool) => bool === true,
+          ),
+        });
+      },
+    );
+  }
+
+  inputHandler(event) {
+    const { name, value } = event.target;
+    const { userData } = this.state;
+    userData[name] = value;
+    this.setState({
+      userData,
+    });
+    this.inputLengthTracker(event);
+  }
+
+  inputLengthTracker(event) {
     const { lengthTracker } = this.state;
     const { name, value } = event.target;
-    lengthTracker[name] = value.length >= MINIMUN_INPUT_LENGTH;
+    if (name === 'emailInput') {
+      const emailVerified = this.emailVerification();
+      lengthTracker[name] = emailVerified;
+      this.setState({
+        lengthTracker,
+        btnDisabled: !Object.values(lengthTracker).every(
+          (bool) => bool === true,
+        ),
+      });
+    }
+    if (name !== 'emailInput') {
+      const MINIMUN_INPUT_LENGTH = 1;
+      lengthTracker[name] = value.length >= MINIMUN_INPUT_LENGTH;
+      this.setState({
+        lengthTracker,
+        btnDisabled: !Object.values(lengthTracker).every(
+          (bool) => bool === true,
+        ),
+      });
+    }
+  }
+
+  emailVerification() {
+    const { userData } = this.state;
+    const { emailInput } = userData;
+    const splitted = emailInput.split('@');
+    if (splitted.length !== 1) {
+      const splittedWithDotCom = splitted[1].split('.com');
+      const hasDotCom = splittedWithDotCom.length !== 1;
+      const hasNothingAfterDotCom = splittedWithDotCom[1] === '';
+      if (hasDotCom && hasNothingAfterDotCom) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  updateUserRequest(event) {
+    event.preventDefault();
     this.setState({
-      lengthTracker,
-      btnDisabled: !Object.values(lengthTracker).every((bool) => bool === true),
+      didApiReturn: false, calledApi: true }, async () => {
+      const { userData } = this.state;
+      const { nameInput, imageInput, descriptionInput, emailInput } = userData;
+      await updateUser({
+        name: nameInput,
+        email: emailInput,
+        image: imageInput,
+        description: descriptionInput,
+      });
+      this.setState({
+        didApiReturn: true,
+      });
     });
   }
 
   render() {
     const {
       userName,
+      userImage,
       userEmail,
       userDescription,
-      userImage,
       loading,
       btnDisabled,
+      calledApi,
+      didApiReturn,
     } = this.state;
     return (
       <main data-testid="page-profile-edit">
@@ -77,8 +175,9 @@ class ProfileEdit extends React.Component {
                 <input
                   id="edit-input-image"
                   data-testid="edit-input-image"
-                  onChange={ this.inputLengthTracker }
+                  onChange={ this.inputHandler }
                   name="imageInput"
+                  defaultValue={ userImage }
                 />
               </label>
               <label htmlFor="edit-input-name">
@@ -86,8 +185,9 @@ class ProfileEdit extends React.Component {
                 <input
                   id="edit-input-name"
                   data-testid="edit-input-name"
-                  onChange={ this.inputLengthTracker }
+                  onChange={ this.inputHandler }
                   name="nameInput"
+                  defaultValue={ userName }
                 />
               </label>
               <label htmlFor="edit-input-email">
@@ -95,8 +195,9 @@ class ProfileEdit extends React.Component {
                 <input
                   id="edit-input-email"
                   data-testid="edit-input-email"
-                  onChange={ this.inputLengthTracker }
+                  onChange={ this.inputHandler }
                   name="emailInput"
+                  defaultValue={ userEmail }
                 />
               </label>
               <label htmlFor="edit-input-description">
@@ -104,20 +205,23 @@ class ProfileEdit extends React.Component {
                 <input
                   id="edit-input-description"
                   data-testid="edit-input-description"
-                  onChange={ this.inputLengthTracker }
+                  onChange={ this.inputHandler }
                   name="descriptionInput"
+                  defaultValue={ userDescription }
                 />
               </label>
               <button
                 data-testid="edit-button-save"
                 type="submit"
                 disabled={ btnDisabled }
+                onClick={ this.updateUserRequest }
               >
                 Salvar
               </button>
             </form>
           </>
         )}
+        {calledApi && (didApiReturn ? <Redirect to="/profile" /> : <Loading />)}
       </main>
     );
   }

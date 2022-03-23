@@ -47,7 +47,7 @@ describe('9 - Faça a requisição para recuperar as músicas favoritas ao entra
       );
 
       renderPath("/album/12");
-
+      
       await waitFor(
         () => expect(screen.queryAllByText('Carregando...')).toHaveLength(0),
         { timeout: 3000 }

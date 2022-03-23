@@ -15,10 +15,12 @@ class Favorites extends React.Component {
       loading: true,
       favorites: null,
       didFavoriteSongsApiReturned: false,
+      favoriteSongsObj: [],
     };
     this.getUserRequest = this.getUserRequest.bind(this);
     this.getFavoriteSongsRequest = this.getFavoriteSongsRequest.bind(this);
     this.getFavoriteSongsObj = this.getFavoriteSongsObj.bind(this);
+    this.removeSongFromFavorites = this.removeSongFromFavorites.bind(this);
   }
 
   async componentDidMount() {
@@ -42,19 +44,29 @@ class Favorites extends React.Component {
 
   async getFavoriteSongsObj() {
     const { favorites } = this.state;
+    // const favoriteSongsTest = await getMusics(favorites);
+    // console.log(favoriteSongsTest);
     this.setState({
-      favoriteSongsObj: [...await getMusics(favorites)],
+      favoriteSongsObj: favorites.length !== 0 ? [...(await getMusics(favorites))] : [],
       didFavoriteSongsApiReturned: true,
     });
   }
 
+  removeSongFromFavorites(songId) {
+    const { favorites } = this.state;
+    this.setState({
+      favorites: favorites.filter((id) => id !== songId),
+    }, async () => this.getFavoriteSongsObj());
+  }
+
   render() {
-    const {
-      userName,
-      loading,
-      favoriteSongsObj,
-      didFavoriteSongsApiReturned,
-    } = this.state;
+    const
+      {
+        userName,
+        loading,
+        favoriteSongsObj,
+        didFavoriteSongsApiReturned,
+      } = this.state;
     return (
       <main data-testid="page-favorites">
         {loading ? <Loading /> : <Header userName={ userName } />}
@@ -77,7 +89,9 @@ class Favorites extends React.Component {
                 trackExplicitness={ trackExplicitness }
                 trackNumber={ trackNumber }
                 isFavorite
-              />);
+                removeSongFromFavorites={ this.removeSongFromFavorites }
+              />
+            );
           })
         ) : (
           <Loading />

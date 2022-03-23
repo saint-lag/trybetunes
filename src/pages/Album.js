@@ -130,8 +130,8 @@ class Album extends React.Component {
     return (
       <main data-testid="page-album">
         {loading ? <Loading /> : <Header userName={ userName } />}
-        {didFavoriteSongsApiReturned ? (
-          canRenderAlbum && (
+        {didFavoriteSongsApiReturned && canRenderAlbum && didApiReturned ? (
+          (
             <>
               <h1 data-testid="album-name">{collectionName}</h1>
               <h2 data-testid="artist-name">
@@ -150,15 +150,11 @@ class Album extends React.Component {
                 {' '}
                 {trackCount}
               </h4>
-              {!didApiReturned ? (
-                <Loading />
-              ) : (
-                <Musics
-                  favoriteSongs={ favoriteSongs }
-                  albumId={ collectionId }
-                  albumTracks={ albumTracks }
-                />
-              )}
+              <Musics
+                favoriteSongs={ favoriteSongs }
+                albumId={ collectionId }
+                albumTracks={ albumTracks }
+              />
             </>
           )
         )

@@ -4,7 +4,6 @@ import './components-styles/album-card.css';
 import {
   addSong,
   removeSong,
-  getFavoriteSongs,
 } from '../services/favoriteSongsAPI';
 import Loading from './Loading';
 
@@ -18,21 +17,17 @@ class MusicCard extends React.Component {
   }
 
   async isChecked(event) {
+    const { removeSongFromFavorites } = this.props;
     if (event.target.checked) {
       this.setState({ loading: true });
       await addSong(event.target.name);
-
-      const FAVORITES_TEST = await getFavoriteSongs();
-      console.log(`FAVORITES_TEST: ${FAVORITES_TEST}`);
-
       this.setState({ loading: false });
     } else {
       this.setState({ loading: true });
+      if (removeSongFromFavorites) {
+        removeSongFromFavorites(event.target.name);
+      }
       await removeSong(event.target.name);
-
-      const FAVORITES_TEST = await getFavoriteSongs();
-      console.log(`FAVORITES_TEST: ${FAVORITES_TEST}`);
-
       this.setState({ loading: false });
     }
   }
@@ -51,6 +46,7 @@ class MusicCard extends React.Component {
       <div id={ trackId } className="music-card">
         {trackExplicitness !== 'notExplicit' && <h3>NSFW</h3>}
         <h3>{trackName}</h3>
+        <h3>Track:</h3>
         <h3>{trackNumber}</h3>
         <audio data-testid="audio-component" src={ previewUrl } controls>
           <track kind="captions" />
@@ -80,11 +76,13 @@ MusicCard.propTypes = {
   trackExplicitness: PropTypes.string,
   trackNumber: PropTypes.number,
   isFavorite: PropTypes.bool.isRequired,
+  removeSongFromFavorites: PropTypes.func,
 };
 
 MusicCard.defaultProps = {
   trackExplicitness: 'notExplicit',
   trackNumber: NaN,
+  removeSongFromFavorites: undefined,
 };
 
 export default MusicCard;

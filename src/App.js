@@ -52,10 +52,9 @@ class App extends React.Component {
             />
             <Route
               path="/album/:id"
-              render={ (props) => (<Album
-                { ...props }
-                loadingStateHandler={ loadingStateHandler }
-              />) }
+              render={ (props) => (
+                <Album { ...props } loadingStateHandler={ loadingStateHandler } />
+              ) }
             />
             <Route
               path="/favorites"
@@ -66,7 +65,9 @@ class App extends React.Component {
             <Route
               path="/profile/edit"
               render={ () => (
-                <ProfileEdit loadingStateHandler={ loadingStateHandler } />
+                <ProfileEdit
+                  loadingStateHandler={ loadingStateHandler }
+                />
               ) }
             />
             <Route
@@ -78,10 +79,12 @@ class App extends React.Component {
             <Route
               exact
               path="/"
-              render={ () => (<Login
-                loadingStateHandler={ loadingStateHandler }
-                redirectHandler={ redirectHandler }
-              />) }
+              render={ () => (
+                <Login
+                  loadingStateHandler={ loadingStateHandler }
+                  redirectHandler={ redirectHandler }
+                />
+              ) }
             />
             <Route
               path="*"
