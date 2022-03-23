@@ -26,7 +26,6 @@ class ProfileEdit extends React.Component {
     };
     this.getUserRequest = this.getUserRequest.bind(this);
     this.inputLengthTracker = this.inputLengthTracker.bind(this);
-    this.emailVerification = this.emailVerification.bind(this);
     this.inputHandler = this.inputHandler.bind(this);
     this.updateUserRequest = this.updateUserRequest.bind(this);
     this.checksUserData = this.checksUserData.bind(this);
@@ -55,13 +54,15 @@ class ProfileEdit extends React.Component {
   }
 
   checksUserData() {
-    const { userName, userImage, userDescription } = this.state;
+    const { userName, userImage, userDescription, userEmail } = this.state;
     const MINIMUN_INPUT_LENGTH = 1;
     this.setState(
       {
         lengthTracker: {
           nameInput: userName.length >= MINIMUN_INPUT_LENGTH,
-          emailInput: this.emailVerification(),
+          emailInput: userEmail.match(
+            /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+          ),
           imageInput: userImage.length >= MINIMUN_INPUT_LENGTH,
           descriptionInput: userDescription.length >= MINIMUN_INPUT_LENGTH,
         },
@@ -91,7 +92,9 @@ class ProfileEdit extends React.Component {
     const { lengthTracker } = this.state;
     const { name, value } = event.target;
     if (name === 'emailInput') {
-      const emailVerified = this.emailVerification();
+      const emailVerified = value.match(
+        /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+      );
       lengthTracker[name] = emailVerified;
       this.setState({
         lengthTracker,
@@ -110,22 +113,6 @@ class ProfileEdit extends React.Component {
         ),
       });
     }
-  }
-
-  emailVerification() {
-    const { userData } = this.state;
-    const { emailInput } = userData;
-    const splitted = emailInput.split('@');
-    if (splitted.length !== 1) {
-      const splittedWithDotCom = splitted[1].split('.com');
-      const hasDotCom = splittedWithDotCom.length !== 1;
-      const hasNothingAfterDotCom = splittedWithDotCom[1] === '';
-      if (hasDotCom && hasNothingAfterDotCom) {
-        return true;
-      }
-      return false;
-    }
-    return false;
   }
 
   updateUserRequest(event) {

@@ -44,8 +44,7 @@ class Favorites extends React.Component {
 
   async getFavoriteSongsObj() {
     const { favorites } = this.state;
-    // const favoriteSongsTest = await getMusics(favorites);
-    // console.log(favoriteSongsTest);
+    console.log(favorites);
     this.setState({
       favoriteSongsObj: favorites.length !== 0 ? [...(await getMusics(favorites))] : [],
       didFavoriteSongsApiReturned: true,
