@@ -5,7 +5,6 @@ import MusicCard from './MusicCard';
 class Musics extends React.Component {
   render() {
     const { albumTracks, favoriteSongs } = this.props;
-    console.log(favoriteSongs);
     return (
       albumTracks
       && (albumTracks.length > 0 ? (
@@ -20,7 +19,8 @@ class Musics extends React.Component {
                 trackExplicitness,
                 trackNumber,
               } = track;
-              const isFavorite = favoriteSongs.includes(String(trackId));
+              const isFavorite = favoriteSongs
+                .find((songObj) => Object.values(songObj).includes(trackId));
               return (
                 <MusicCard
                   key={ trackId }
@@ -30,7 +30,7 @@ class Musics extends React.Component {
                   trackTimeMillis={ trackTimeMillis }
                   trackExplicitness={ trackExplicitness }
                   trackNumber={ trackNumber }
-                  isFavorite={ isFavorite }
+                  isFavorite={ isFavorite !== undefined ? isFavorite : false }
                 />
               );
             }

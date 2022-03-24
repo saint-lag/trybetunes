@@ -38,8 +38,10 @@ class Album extends React.Component {
 
   async getFavoriteSongsRequest() {
     const request = await getFavoriteSongs();
-    this.setState({ favoriteSongs: request });
-    this.setState({ didFavoriteSongsApiReturned: true });
+    this.setState({
+      favoriteSongs: request,
+      didFavoriteSongsApiReturned: true,
+    });
   }
 
   async getUserRequest() {
@@ -126,7 +128,6 @@ class Album extends React.Component {
       didFavoriteSongsApiReturned,
       favoriteSongs,
     } = this.state;
-
     return (
       <main data-testid="page-album">
         {loading ? <Loading /> : <Header userName={ userName } />}

@@ -36,7 +36,8 @@ class ProfileEdit extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getUserRequest().then(this.checksUserData());
+    await this.getUserRequest();
+    this.checksUserData();
   }
 
   async getUserRequest() {

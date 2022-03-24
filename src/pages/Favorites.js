@@ -2,7 +2,6 @@ import React from 'react';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
 import { getUser } from '../services/userAPI';
-import getMusics from '../services/musicsAPI';
 import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 import './pages-styles/favorites.css';
 import MusicCard from '../components/MusicCard';
@@ -15,18 +14,15 @@ class Favorites extends React.Component {
       loading: true,
       favorites: null,
       didFavoriteSongsApiReturned: false,
-      favoriteSongsObj: [],
     };
     this.getUserRequest = this.getUserRequest.bind(this);
     this.getFavoriteSongsRequest = this.getFavoriteSongsRequest.bind(this);
-    this.getFavoriteSongsObj = this.getFavoriteSongsObj.bind(this);
     this.removeSongFromFavorites = this.removeSongFromFavorites.bind(this);
   }
 
   async componentDidMount() {
     await this.getUserRequest();
     await this.getFavoriteSongsRequest();
-    await this.getFavoriteSongsObj();
   }
 
   async getUserRequest() {
@@ -39,14 +35,6 @@ class Favorites extends React.Component {
   async getFavoriteSongsRequest() {
     this.setState({
       favorites: await getFavoriteSongs(),
-    });
-  }
-
-  async getFavoriteSongsObj() {
-    const { favorites } = this.state;
-    console.log(favorites);
-    this.setState({
-      favoriteSongsObj: favorites.length !== 0 ? [...(await getMusics(favorites))] : [],
       didFavoriteSongsApiReturned: true,
     });
   }
@@ -54,16 +42,16 @@ class Favorites extends React.Component {
   removeSongFromFavorites(songId) {
     const { favorites } = this.state;
     this.setState({
-      favorites: favorites.filter((id) => id !== songId),
-    }, async () => this.getFavoriteSongsObj());
+      favorites: favorites.filter((songObj) => songObj.trackId !== songId),
+    });
   }
 
   render() {
     const
       {
+        favorites,
         userName,
         loading,
-        favoriteSongsObj,
         didFavoriteSongsApiReturned,
       } = this.state;
     return (
@@ -71,7 +59,7 @@ class Favorites extends React.Component {
         {loading ? <Loading /> : <Header userName={ userName } />}
         <h1>Favorites:</h1>
         {didFavoriteSongsApiReturned ? (
-          favoriteSongsObj.map((obj) => {
+          favorites.map((obj) => {
             const {
               trackId,
               trackName,

@@ -18,17 +18,33 @@ class MusicCard extends React.Component {
 
   async isChecked(event) {
     const { removeSongFromFavorites } = this.props;
+    const {
+      trackId,
+      trackName,
+      previewUrl,
+      trackExplicitness,
+      trackNumber,
+      isFavorite,
+    } = this.props;
+    const songObj = {
+      trackId,
+      trackName,
+      previewUrl,
+      trackExplicitness,
+      trackNumber,
+      isFavorite,
+    };
     if (event.target.checked) {
       this.setState({ loading: true });
-      await addSong(event.target.name);
+      await addSong(songObj);
       this.setState({ loading: false });
     } else {
       this.setState({ loading: true });
-      if (removeSongFromFavorites) {
-        removeSongFromFavorites(event.target.name);
-      }
-      await removeSong(event.target.name);
+      await removeSong(songObj);
       this.setState({ loading: false });
+      if (removeSongFromFavorites) {
+        removeSongFromFavorites(songObj.trackId);
+      }
     }
   }
 
