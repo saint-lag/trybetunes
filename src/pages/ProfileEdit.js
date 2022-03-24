@@ -23,6 +23,10 @@ class ProfileEdit extends React.Component {
         imageInput: false,
         descriptionInput: false,
       },
+      userName: '',
+      userImage: '',
+      userEmail: '',
+      userDescription: '',
     };
     this.getUserRequest = this.getUserRequest.bind(this);
     this.inputLengthTracker = this.inputLengthTracker.bind(this);
@@ -32,8 +36,7 @@ class ProfileEdit extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getUserRequest();
-    this.checksUserData();
+    await this.getUserRequest().then(this.checksUserData());
   }
 
   async getUserRequest() {
@@ -56,13 +59,13 @@ class ProfileEdit extends React.Component {
   checksUserData() {
     const { userName, userImage, userDescription, userEmail } = this.state;
     const MINIMUN_INPUT_LENGTH = 1;
+    const EMAIL_REGEX = /\S+@\S+\.\S+/;
+    const emailMatch = userEmail.match(EMAIL_REGEX);
     this.setState(
       {
         lengthTracker: {
           nameInput: userName.length >= MINIMUN_INPUT_LENGTH,
-          emailInput: userEmail.match(
-            /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-          ),
+          emailInput: emailMatch !== null ? emailMatch.includes(userEmail) : false,
           imageInput: userImage.length >= MINIMUN_INPUT_LENGTH,
           descriptionInput: userDescription.length >= MINIMUN_INPUT_LENGTH,
         },
@@ -92,10 +95,11 @@ class ProfileEdit extends React.Component {
     const { lengthTracker } = this.state;
     const { name, value } = event.target;
     if (name === 'emailInput') {
-      const emailVerified = value.match(
-        /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-      );
-      lengthTracker[name] = emailVerified;
+      const EMAIL_REGEX = /\S+@\S+\.\S+/;
+      const emailVerified = value.match(EMAIL_REGEX);
+      lengthTracker[name] = emailVerified !== null
+        ? emailVerified.includes(value)
+        : false;
       this.setState({
         lengthTracker,
         btnDisabled: !Object.values(lengthTracker).every(
@@ -117,20 +121,25 @@ class ProfileEdit extends React.Component {
 
   updateUserRequest(event) {
     event.preventDefault();
-    this.setState({
-      didApiReturn: false, calledApi: true }, async () => {
-      const { userData } = this.state;
-      const { nameInput, imageInput, descriptionInput, emailInput } = userData;
-      await updateUser({
-        name: nameInput,
-        email: emailInput,
-        image: imageInput,
-        description: descriptionInput,
-      });
-      this.setState({
-        didApiReturn: true,
-      });
-    });
+    this.setState(
+      {
+        didApiReturn: false,
+        calledApi: true,
+      },
+      async () => {
+        const { userData } = this.state;
+        const { nameInput, imageInput, descriptionInput, emailInput } = userData;
+        await updateUser({
+          name: nameInput,
+          email: emailInput,
+          image: imageInput,
+          description: descriptionInput,
+        });
+        this.setState({
+          didApiReturn: true,
+        });
+      },
+    );
   }
 
   render() {
